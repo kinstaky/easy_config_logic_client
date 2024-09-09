@@ -1,0 +1,31 @@
+name: easy_config_logic_client
+description: Client for easy-config-logic.
+publish_to: none
+
+environment:
+  sdk: ^3.1.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+  async: ^2.2.0
+  grpc: ^4.0.0
+  protobuf: ^3.0.0
+  collection: ^1.18.0-nullsafety.4
+  provider: ^6.0.0
+  fl_chart: ^0.69.0
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^4.0.0
+  lints: ^4.0.0
+
+  hive_generator: ^2.0.1
+  build_runner: ^2.4.12
+
+flutter:
+  uses-material-design: true

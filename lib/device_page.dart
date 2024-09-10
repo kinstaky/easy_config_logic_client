@@ -66,7 +66,8 @@ class DevicePage extends StatelessWidget {
   }
 }
 
-class ScalerTab extends StatelessWidget {
+
+class ScalerTab extends StatefulWidget {
   const ScalerTab({
     super.key,
     required this.device,
@@ -77,6 +78,13 @@ class ScalerTab extends StatelessWidget {
   final DeviceModel device;
   final List lineColors;
 
+  @override
+  State<ScalerTab> createState() => _ScalerTabState();
+}
+
+class _ScalerTabState extends State<ScalerTab> {
+  int selectedMode = 0;
+
   List<LineChartBarData> scalerLineData(List<List<int>> scalers, List<bool> show) {
     List<LineChartBarData> result = [];
     for (var i = 0; i < scalerNum; ++i) {
@@ -85,7 +93,7 @@ class ScalerTab extends StatelessWidget {
         isCurved: false,
         dotData: const FlDotData(show: false),
         belowBarData: BarAreaData(show: false),
-        color: lineColors[i],
+        color: widget.lineColors[i],
         spots: scalers[i].mapIndexed(
           (index, value) => FlSpot(index.toDouble(), value.toDouble())
         ).toList(),
@@ -97,9 +105,47 @@ class ScalerTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(70, 20, 20, 0),
+          child: MenuAnchor(
+            builder: (BuildContext context, MenuController controller, Widget? child) {
+              return FilledButton(
+                onPressed: () {
+                  if (controller.isOpen) {
+                    controller.close();
+                  } else {
+                    controller.open();
+                  }
+                },
+                style: FilledButton.styleFrom(
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
+                ),
+                child: Text(scalerLiveModeName[selectedMode]),
+              );
+            },
+            menuChildren: List<MenuItemButton>.generate(
+              scalerLiveModeName.length,
+              (int index) => MenuItemButton(
+                onPressed: () {
+                  final deviceMap = context.read<DeviceMapModel>();
+                  final dev = deviceMap.devices[deviceMap.selectedDevice];
+                  if (dev != null) {
+                    dev.scalerLiveMode = index;
+                    dev.refreshVisualScaler();
+                  }
+                  setState(() => selectedMode = index);
+                },
+                child: Text(scalerLiveModeName[index]),
+              )
+            )
+          ),
+        ),
         SizedBox(
-          height: 400,
+          height: 380,
           child: Padding(
             padding: const EdgeInsets.all(30.0),
             child: LineChart(
@@ -129,8 +175,8 @@ class ScalerTab extends StatelessWidget {
                   ),
                 ),
                 lineBarsData: scalerLineData(
-                  device.visualScaler,
-                  device.visual
+                  widget.device.visualScaler,
+                  widget.device.visual
                 ),
                 minX: 0,
                 minY: 0,
@@ -141,14 +187,14 @@ class ScalerTab extends StatelessWidget {
         Wrap(
           spacing: 20,
           runSpacing: 10,
-          children: device.scaler.mapIndexed(
+          children: widget.device.scaler.mapIndexed(
             (index, value) {
               return SizedBox(
                 width: 120,
                 child: TextButton(
                   onPressed: () {
-                    device.visual[index] = !device.visual[index];
-                    device.refreshVisualScaler();
+                    widget.device.visual[index] = !widget.device.visual[index];
+                    widget.device.refreshVisualScaler();
                   },
                   iconAlignment: IconAlignment.start,
                   style: TextButton.styleFrom(
@@ -159,9 +205,9 @@ class ScalerTab extends StatelessWidget {
                   ),
                   child: Text(
                     "$index: $value",
-                    style: device.visual[index]
+                    style: widget.device.visual[index]
                       ? Theme.of(context).textTheme.bodyLarge!.copyWith(
-                        color: lineColors[index]
+                        color: widget.lineColors[index]
                       )
                       : Theme.of(context).textTheme.bodyLarge,
                   ),

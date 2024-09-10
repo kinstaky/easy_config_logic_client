@@ -7,6 +7,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:easy_config_logic_client/generated/ecl.pbgrpc.dart';
 
 const int scalerNum = 32;
+const int maxConnectTry = 5;
 
 class DeviceModel {
   DeviceModel({
@@ -14,6 +15,7 @@ class DeviceModel {
     required this.address,
     required this.port,
   }) {
+    errorConnect = 0;
     for (var i = 0; i < scalerNum; ++i) {
       scaler.add(0);
       visual.add(false);
@@ -22,33 +24,53 @@ class DeviceModel {
         visualScaler[i].add(0);
       }
     }
+    initStub();
   }
 
+  DeviceModel.from(DeviceModel other) {
+    state = other.state;
+    errorConnect = other.errorConnect;
+    scaler = List.from(other.scaler);
+    visual = List.from(other.visual);
+    visualScaler = List.from(other.visualScaler);
+    name = other.name;
+    address = other.address;
+    port = other.port;
+  }
+
+
   int state = 0;
+  int errorConnect = 0;
   List<int> scaler = [];
   List<bool> visual = [];
   List<List<int>> visualScaler = [];
   String name = "";
   String address = "";
   String port = "";
+  late EasyConfigLogicClient stub;
 
-  final stub = EasyConfigLogicClient(
-    ClientChannel(
-      'localhost',
-      port: 2233,
-      options: const ChannelOptions(
-        credentials: ChannelCredentials.insecure()
+  void initStub() {
+    stub = EasyConfigLogicClient(
+      ClientChannel(
+        address,
+        port: int.parse(port),
+        options: const ChannelOptions(
+          credentials: ChannelCredentials.insecure(),
+        ),
       ),
-    )
-  );
+    );
+  }
 
-  Future<void> refresh() async {
+  Future<void> refreshState() async {
+    if (errorConnect >= maxConnectTry) return;
     try {
       final Request request = Request(type: 0);
       final response = await stub.getState(request);
       state = response.value == 1 ? 3 : 1;
+      errorConnect = 0;
     } catch (e) {
       print("Caught error: $e");
+      ++errorConnect;
       state = 0;
     }
   }
@@ -117,14 +139,9 @@ class DeviceAdapter extends TypeAdapter<DeviceModel> {
 }
 
 
-class DeviceGroupModel extends ChangeNotifier {
+class DeviceMapModel extends ChangeNotifier {
 
-  DeviceGroupModel() {
-    Timer.periodic(
-      const Duration(seconds: 1),
-      (_) => refresh(),
-    );
-  }
+  DeviceMapModel();
 
   Future<void> init() async {
     await Hive.initFlutter();
@@ -136,6 +153,10 @@ class DeviceGroupModel extends ChangeNotifier {
       DeviceModel device = box.get("device$i");
       devices[device.name] = device;
     }
+    Timer.periodic(
+      const Duration(seconds: 1),
+      (_) => refresh(),
+    );
   }
 
   Future<void> saveDevice() async {
@@ -150,11 +171,15 @@ class DeviceGroupModel extends ChangeNotifier {
   }
 
   final Map<String, DeviceModel> devices = {};
-  // String selectedDevice = "test";
+  String selectedDevice = "";
 
   Future<void> refresh() async {
     for (final dev in devices.values) {
-      await dev.refreshScaler();
+      if (dev.name == selectedDevice) {
+        await dev.refreshScaler();
+      } else {
+        await dev.refreshState();
+      }
     }
     notifyListeners();
   }
@@ -180,6 +205,7 @@ class DeviceGroupModel extends ChangeNotifier {
       throw "Device name not existed: ${device.name}";
     }
     devices[device.name] = device;
+    device.initStub();
     saveDevice();
   }
 }

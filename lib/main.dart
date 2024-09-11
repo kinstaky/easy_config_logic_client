@@ -33,6 +33,7 @@ class Client extends StatelessWidget {
             brightness: Brightness.dark,
           ),
         ),
+        restorationScopeId: "app",
         home: const ClientPage(),
       ),
     );

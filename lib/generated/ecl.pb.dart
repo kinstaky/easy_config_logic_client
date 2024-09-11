@@ -127,6 +127,98 @@ class Response extends $pb.GeneratedMessage {
   void clearValue() => clearField(1);
 }
 
+class DateRequest extends $pb.GeneratedMessage {
+  factory DateRequest({
+    $core.int? year,
+    $core.int? month,
+    $core.int? day,
+    $core.int? flag,
+  }) {
+    final $result = create();
+    if (year != null) {
+      $result.year = year;
+    }
+    if (month != null) {
+      $result.month = month;
+    }
+    if (day != null) {
+      $result.day = day;
+    }
+    if (flag != null) {
+      $result.flag = flag;
+    }
+    return $result;
+  }
+  DateRequest._() : super();
+  factory DateRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory DateRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'DateRequest', package: const $pb.PackageName(_omitMessageNames ? '' : 'ecl'), createEmptyInstance: create)
+    ..a<$core.int>(1, _omitFieldNames ? '' : 'year', $pb.PbFieldType.O3)
+    ..a<$core.int>(2, _omitFieldNames ? '' : 'month', $pb.PbFieldType.O3)
+    ..a<$core.int>(3, _omitFieldNames ? '' : 'day', $pb.PbFieldType.O3)
+    ..a<$core.int>(4, _omitFieldNames ? '' : 'flag', $pb.PbFieldType.O3)
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  DateRequest clone() => DateRequest()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  DateRequest copyWith(void Function(DateRequest) updates) => super.copyWith((message) => updates(message as DateRequest)) as DateRequest;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static DateRequest create() => DateRequest._();
+  DateRequest createEmptyInstance() => create();
+  static $pb.PbList<DateRequest> createRepeated() => $pb.PbList<DateRequest>();
+  @$core.pragma('dart2js:noInline')
+  static DateRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<DateRequest>(create);
+  static DateRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.int get year => $_getIZ(0);
+  @$pb.TagNumber(1)
+  set year($core.int v) { $_setSignedInt32(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasYear() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearYear() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.int get month => $_getIZ(1);
+  @$pb.TagNumber(2)
+  set month($core.int v) { $_setSignedInt32(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasMonth() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearMonth() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.int get day => $_getIZ(2);
+  @$pb.TagNumber(3)
+  set day($core.int v) { $_setSignedInt32(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasDay() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearDay() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.int get flag => $_getIZ(3);
+  @$pb.TagNumber(4)
+  set flag($core.int v) { $_setSignedInt32(3, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasFlag() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearFlag() => clearField(4);
+}
+
 
 const _omitFieldNames = $core.bool.fromEnvironment('protobuf.omit_field_names');
 const _omitMessageNames = $core.bool.fromEnvironment('protobuf.omit_message_names');

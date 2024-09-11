@@ -29,6 +29,10 @@ class EasyConfigLogicClient extends $grpc.Client {
       '/ecl.EasyConfigLogic/GetScaler',
       ($0.Request value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $0.Response.fromBuffer(value));
+  static final _$getScalerDate = $grpc.ClientMethod<$0.DateRequest, $0.Response>(
+      '/ecl.EasyConfigLogic/GetScalerDate',
+      ($0.DateRequest value) => value.writeToBuffer(),
+      ($core.List<$core.int> value) => $0.Response.fromBuffer(value));
 
   EasyConfigLogicClient($grpc.ClientChannel channel,
       {$grpc.CallOptions? options,
@@ -42,6 +46,10 @@ class EasyConfigLogicClient extends $grpc.Client {
 
   $grpc.ResponseStream<$0.Response> getScaler($0.Request request, {$grpc.CallOptions? options}) {
     return $createStreamingCall(_$getScaler, $async.Stream.fromIterable([request]), options: options);
+  }
+
+  $grpc.ResponseStream<$0.Response> getScalerDate($0.DateRequest request, {$grpc.CallOptions? options}) {
+    return $createStreamingCall(_$getScalerDate, $async.Stream.fromIterable([request]), options: options);
   }
 }
 
@@ -64,6 +72,13 @@ abstract class EasyConfigLogicServiceBase extends $grpc.Service {
         true,
         ($core.List<$core.int> value) => $0.Request.fromBuffer(value),
         ($0.Response value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.DateRequest, $0.Response>(
+        'GetScalerDate',
+        getScalerDate_Pre,
+        false,
+        true,
+        ($core.List<$core.int> value) => $0.DateRequest.fromBuffer(value),
+        ($0.Response value) => value.writeToBuffer()));
   }
 
   $async.Future<$0.Response> getState_Pre($grpc.ServiceCall call, $async.Future<$0.Request> request) async {
@@ -74,6 +89,11 @@ abstract class EasyConfigLogicServiceBase extends $grpc.Service {
     yield* getScaler(call, await request);
   }
 
+  $async.Stream<$0.Response> getScalerDate_Pre($grpc.ServiceCall call, $async.Future<$0.DateRequest> request) async* {
+    yield* getScalerDate(call, await request);
+  }
+
   $async.Future<$0.Response> getState($grpc.ServiceCall call, $0.Request request);
   $async.Stream<$0.Response> getScaler($grpc.ServiceCall call, $0.Request request);
+  $async.Stream<$0.Response> getScalerDate($grpc.ServiceCall call, $0.DateRequest request);
 }

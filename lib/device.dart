@@ -9,6 +9,9 @@ import 'package:easy_config_logic_client/generated/ecl.pbgrpc.dart';
 const int scalerNum = 32;
 const int maxConnectTry = 5;
 
+enum ScalerMode {
+  modeLive, modeHistory
+}
 enum ScalerLiveMode {
   mode2m, mode20m, mode2h, mode24h,
 }
@@ -26,6 +29,7 @@ class DeviceModel {
     required this.port,
   }) {
     errorConnect = 0;
+    scalerMode = 0;
     scalerLiveMode = 0;
     for (var i = 0; i < scalerNum; ++i) {
       scaler.add(0);
@@ -58,6 +62,8 @@ class DeviceModel {
   int state = 0;
   // connection error times
   int errorConnect = 0;
+  // scaler mode
+  int scalerMode = 0;
   // scaler live mode
   int scalerLiveMode = 0;
   // current scaler value
@@ -102,18 +108,20 @@ class DeviceModel {
       await for (var response in stub.getScaler(request)) {
         scaler.add(response.value);
       }
-      ++avgNumber;
-      if (avgNumber >= scalerLiveModeAvg[scalerLiveMode]) {
-        avgNumber = 0;
-        for (var i = 0; i < scalerNum; ++i) {
-          visualScaler[i].removeAt(0);
-          visualScaler[i].add(scaler[i]);
-        }
-      } else {
-        for (var i = 0; i < scalerNum; ++i) {
-          var lastScaler = visualScaler[i].last;
-          var sum = lastScaler * avgNumber + scaler[i];
-          visualScaler[i].last = (sum / (avgNumber + 1.0)).round();
+      if (ScalerMode.values[scalerMode] == ScalerMode.modeLive) {
+        ++avgNumber;
+        if (avgNumber >= scalerLiveModeAvg[scalerLiveMode]) {
+          avgNumber = 0;
+          for (var i = 0; i < scalerNum; ++i) {
+            visualScaler[i].removeAt(0);
+            visualScaler[i].add(scaler[i]);
+          }
+        } else {
+          for (var i = 0; i < scalerNum; ++i) {
+            var lastScaler = visualScaler[i].last;
+            var sum = lastScaler * avgNumber + scaler[i];
+            visualScaler[i].last = (sum / (avgNumber + 1.0)).round();
+          }
         }
       }
       state = 3;
@@ -123,7 +131,16 @@ class DeviceModel {
     }
   }
 
-  Future<void> refreshVisualScaler() async {
+
+  Future<void> getVisualScaler({DateTime? date}) async {
+    if (scalerMode == 0) {
+      await getLiveScaler();
+    } else {
+      await getHistoryScaler(date!);
+    }
+  }
+
+  Future<void> getLiveScaler() async {
     for (var i = 0; i < visual.length; ++i) {
       if (!visual[i]) continue;
       final Request request = Request(type: scalerLiveMode+1, index: i);
@@ -139,6 +156,40 @@ class DeviceModel {
         print("Caught error: $e");
         state = 0;
       }
+    }
+  }
+
+  Future<void> getHistoryScaler(DateTime date) async {
+    var flag = 0;
+    var visualIndex = [];
+    for (var i = 0; i < visual.length; ++i) {
+      if (!visual[i]) continue;
+      flag |= 1 << i;
+      visualIndex.add(i);
+    }
+    if (flag == 0) return;
+    final DateRequest request = DateRequest(
+      year: date.year,
+      month: date.month,
+      day: date.day,
+      flag: flag
+    );
+    try {
+      var index = 0;
+      var rangeIndex = 0;
+      await for (var response in stub.getScalerDate(request)) {
+        visualScaler[visualIndex[index]][rangeIndex] = response.value;
+        ++rangeIndex;
+        if (rangeIndex == visualScaler[visualIndex[index]].length) {
+          index++;
+          rangeIndex = 0;
+        }
+      }
+    } on GrpcError catch (e) {
+      print ("Caught error: $e");
+    } catch (e) {
+      print("Caught error: $e");
+      state = 0;
     }
   }
 }

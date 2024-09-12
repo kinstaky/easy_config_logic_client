@@ -43,14 +43,19 @@ class DeviceModel {
   }
 
   DeviceModel.from(DeviceModel other) {
-    state = other.state;
-    errorConnect = other.errorConnect;
-    scaler = List.from(other.scaler);
-    visual = List.from(other.visual);
-    visualScaler = List.from(other.visualScaler);
     name = other.name;
     address = other.address;
     port = other.port;
+    state = other.state;
+    errorConnect = other.errorConnect;
+    scalerMode = other.scalerMode;
+    scalerLiveMode = other.scalerLiveMode;
+    scaler = List.from(other.scaler);
+    visual = List.from(other.visual);
+    visualScaler = List.from(other.visualScaler);
+    avgNumber = other.avgNumber;
+    configTime = other.configTime;
+    expressions = other.expressions;
   }
 
   // gRPC
@@ -74,6 +79,10 @@ class DeviceModel {
   List<List<int>> visualScaler = [];
   // calculated scaler value
   int avgNumber = 0;
+  // config file name
+  DateTime configTime = DateTime.now();
+  // config expressions
+  List<String> expressions = [];
 
   void initStub() {
     stub = EasyConfigLogicClient(
@@ -131,7 +140,6 @@ class DeviceModel {
     }
   }
 
-
   Future<void> getVisualScaler({DateTime? date}) async {
     if (scalerMode == 0) {
       await getLiveScaler();
@@ -151,10 +159,8 @@ class DeviceModel {
           ++rangeIndex;
         }
         avgNumber = 0;
-        state = 3;
       } catch (e) {
         print("Caught error: $e");
-        state = 0;
       }
     }
   }
@@ -189,7 +195,35 @@ class DeviceModel {
       print ("Caught error: $e");
     } catch (e) {
       print("Caught error: $e");
-      state = 0;
+    }
+  }
+
+  Future<void> getConfig() async {
+    final Request request = Request(type: 0);
+    List<String> newExpressions = [];
+    try {
+      await for (var expr in stub.getConfig(request)) {
+        newExpressions.add(expr.value);
+      }
+    } catch (e) {
+      print("Caught error: $e");
+    }
+    configTime = DateTime.parse(newExpressions.first);
+    expressions = newExpressions.sublist(1);
+  }
+
+  Future<int> setConfig() async {
+    Stream<Expression> convertExpression() async* {
+      for (var expr in expressions) {
+        yield Expression(value: expr);
+      }
+    }
+    try {
+      final result = await stub.setConfig(convertExpression());
+      return result.value;
+    } catch (e) {
+      print("Caught error: $e");
+      return -1;
     }
   }
 }
@@ -233,6 +267,9 @@ class DeviceMapModel extends ChangeNotifier {
     for (var i = 0; i < deviceCount; ++i) {
       DeviceModel device = box.get("device$i");
       devices[device.name] = device;
+    }
+    for (var dev in devices.values) {
+      await dev.getConfig();
     }
     Timer.periodic(
       const Duration(seconds: 1),

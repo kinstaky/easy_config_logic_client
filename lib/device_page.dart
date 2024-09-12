@@ -58,7 +58,7 @@ class DevicePage extends StatelessWidget {
                   lineColors: lineColors,
                 ),
               ),
-              const Text("config"),
+              ConfigTab(device: device),
             ],
           )
         ),
@@ -66,6 +66,125 @@ class DevicePage extends StatelessWidget {
     } else {
       return const Scaffold();
     }
+  }
+}
+
+class ConfigTab extends StatefulWidget {
+  const ConfigTab({
+    super.key,
+    required this.device,
+  });
+
+  final DeviceModel device;
+
+  @override
+  State<ConfigTab> createState() => _ConfigTabState();
+}
+
+class _ConfigTabState extends State<ConfigTab> {
+
+  _ConfigTabState();
+
+  late final TextEditingController textController;
+
+  @override
+  void initState() {
+    super.initState();
+    textController = TextEditingController(
+      text: widget.device.expressions.join("\n"),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final buttonStyle = OutlinedButton.styleFrom(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(5),
+        ),
+      ),
+    );
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          vertical: 10,
+          horizontal: 5,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 5,
+                    horizontal: 20,
+                  ),
+                  child: OutlinedButton(
+                    onPressed: () async {
+                      await widget.device.getConfig();
+                      textController.text =
+                        widget.device.expressions.join("\n");
+                    },
+                    style: buttonStyle,
+                    child: const Text("load"),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 5,
+                    horizontal: 0,
+                  ),
+                  child: OutlinedButton(
+                    onPressed: (){
+                      textController.text = "";
+                    },
+                    style: buttonStyle,
+                    child: const Text("clear"),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 5,
+                    horizontal: 20,
+                  ),
+                  child: FilledButton(
+                    onPressed: () async {
+                      widget.device.expressions = textController.text.split("\n");
+                      var result = await widget.device.setConfig();
+                      print("Set result $result");
+                    },
+                    style: buttonStyle,
+                    child: const Text("save"),
+                  ),
+                ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 5.0),
+              child: Text(
+                "Last config: ${widget.device.configTime.toString().substring(0, 19)}",
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 0.0,
+                horizontal: 20.0,
+              ),
+              child: TextField(
+                controller: textController,
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 

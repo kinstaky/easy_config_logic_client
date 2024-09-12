@@ -54,3 +54,15 @@ final $typed_data.Uint8List dateRequestDescriptor = $convert.base64Decode(
     'CgtEYXRlUmVxdWVzdBISCgR5ZWFyGAEgASgFUgR5ZWFyEhQKBW1vbnRoGAIgASgFUgVtb250aB'
     'IQCgNkYXkYAyABKAVSA2RheRISCgRmbGFnGAQgASgFUgRmbGFn');
 
+@$core.Deprecated('Use expressionDescriptor instead')
+const Expression$json = {
+  '1': 'Expression',
+  '2': [
+    {'1': 'value', '3': 1, '4': 1, '5': 9, '10': 'value'},
+  ],
+};
+
+/// Descriptor for `Expression`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List expressionDescriptor = $convert.base64Decode(
+    'CgpFeHByZXNzaW9uEhQKBXZhbHVlGAEgASgJUgV2YWx1ZQ==');
+

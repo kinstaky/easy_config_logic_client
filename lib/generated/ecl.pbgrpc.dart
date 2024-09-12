@@ -33,6 +33,14 @@ class EasyConfigLogicClient extends $grpc.Client {
       '/ecl.EasyConfigLogic/GetScalerDate',
       ($0.DateRequest value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $0.Response.fromBuffer(value));
+  static final _$getConfig = $grpc.ClientMethod<$0.Request, $0.Expression>(
+      '/ecl.EasyConfigLogic/GetConfig',
+      ($0.Request value) => value.writeToBuffer(),
+      ($core.List<$core.int> value) => $0.Expression.fromBuffer(value));
+  static final _$setConfig = $grpc.ClientMethod<$0.Expression, $0.Response>(
+      '/ecl.EasyConfigLogic/SetConfig',
+      ($0.Expression value) => value.writeToBuffer(),
+      ($core.List<$core.int> value) => $0.Response.fromBuffer(value));
 
   EasyConfigLogicClient($grpc.ClientChannel channel,
       {$grpc.CallOptions? options,
@@ -50,6 +58,14 @@ class EasyConfigLogicClient extends $grpc.Client {
 
   $grpc.ResponseStream<$0.Response> getScalerDate($0.DateRequest request, {$grpc.CallOptions? options}) {
     return $createStreamingCall(_$getScalerDate, $async.Stream.fromIterable([request]), options: options);
+  }
+
+  $grpc.ResponseStream<$0.Expression> getConfig($0.Request request, {$grpc.CallOptions? options}) {
+    return $createStreamingCall(_$getConfig, $async.Stream.fromIterable([request]), options: options);
+  }
+
+  $grpc.ResponseFuture<$0.Response> setConfig($async.Stream<$0.Expression> request, {$grpc.CallOptions? options}) {
+    return $createStreamingCall(_$setConfig, request, options: options).single;
   }
 }
 
@@ -79,6 +95,20 @@ abstract class EasyConfigLogicServiceBase extends $grpc.Service {
         true,
         ($core.List<$core.int> value) => $0.DateRequest.fromBuffer(value),
         ($0.Response value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.Request, $0.Expression>(
+        'GetConfig',
+        getConfig_Pre,
+        false,
+        true,
+        ($core.List<$core.int> value) => $0.Request.fromBuffer(value),
+        ($0.Expression value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.Expression, $0.Response>(
+        'SetConfig',
+        setConfig,
+        true,
+        false,
+        ($core.List<$core.int> value) => $0.Expression.fromBuffer(value),
+        ($0.Response value) => value.writeToBuffer()));
   }
 
   $async.Future<$0.Response> getState_Pre($grpc.ServiceCall call, $async.Future<$0.Request> request) async {
@@ -93,7 +123,13 @@ abstract class EasyConfigLogicServiceBase extends $grpc.Service {
     yield* getScalerDate(call, await request);
   }
 
+  $async.Stream<$0.Expression> getConfig_Pre($grpc.ServiceCall call, $async.Future<$0.Request> request) async* {
+    yield* getConfig(call, await request);
+  }
+
   $async.Future<$0.Response> getState($grpc.ServiceCall call, $0.Request request);
   $async.Stream<$0.Response> getScaler($grpc.ServiceCall call, $0.Request request);
   $async.Stream<$0.Response> getScalerDate($grpc.ServiceCall call, $0.DateRequest request);
+  $async.Stream<$0.Expression> getConfig($grpc.ServiceCall call, $0.Request request);
+  $async.Future<$0.Response> setConfig($grpc.ServiceCall call, $async.Stream<$0.Expression> request);
 }

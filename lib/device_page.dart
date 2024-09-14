@@ -501,13 +501,44 @@ class ScalerChart extends StatelessWidget {
                 right: const BorderSide(color: Colors.transparent),
               ),
             ),
-            titlesData: const FlTitlesData(
-              rightTitles: AxisTitles(
+            titlesData: FlTitlesData(
+              rightTitles: const AxisTitles(
                 sideTitles: SideTitles(showTitles: false),
               ),
-              topTitles: AxisTitles(
+              topTitles: const AxisTitles(
                 sideTitles: SideTitles(showTitles: false),
               ),
+              bottomTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  reservedSize: 50,
+                  interval: 12,
+                  maxIncluded: true,
+                  getTitlesWidget: (value, meta) {
+                    late final String text;
+                    if (ScalerMode.values[device.scalerMode] == ScalerMode.modeLive) {
+                      final time = DateTime.now().add(Duration(
+                        seconds: (value.toInt() - 120) * scalerLiveModeAvg[device.scalerLiveMode]
+                      ));
+                      if (ScalerLiveMode.values[device.scalerLiveMode] == ScalerLiveMode.mode2m) {
+                        text = "${time.hour}"
+                          ":${time.minute.toString().padLeft(2, '0')}"
+                          ":${time.second.toString().padLeft(2, '0')}";
+                      } else {
+                        text = "${time.hour}:${time.minute.toString().padLeft(2, '0')}";
+                      }
+                    } else {
+                      final minute = value.toInt() * 12;
+                      final hour = value.toInt() / 5;
+                      text = "$hour:$minute";
+                    }
+                    return SideTitleWidget(
+                      axisSide: meta.axisSide,
+                      child: Text(text),
+                    );
+                  },
+                )
+              )
             ),
             lineBarsData: scalerLineData(
               device.visualScaler,

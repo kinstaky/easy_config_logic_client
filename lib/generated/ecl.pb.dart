@@ -16,14 +16,10 @@ import 'package:protobuf/protobuf.dart' as $pb;
 class Request extends $pb.GeneratedMessage {
   factory Request({
     $core.int? type,
-    $core.int? index,
   }) {
     final $result = create();
     if (type != null) {
       $result.type = type;
-    }
-    if (index != null) {
-      $result.index = index;
     }
     return $result;
   }
@@ -33,7 +29,6 @@ class Request extends $pb.GeneratedMessage {
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'Request', package: const $pb.PackageName(_omitMessageNames ? '' : 'ecl'), createEmptyInstance: create)
     ..a<$core.int>(1, _omitFieldNames ? '' : 'type', $pb.PbFieldType.O3)
-    ..a<$core.int>(2, _omitFieldNames ? '' : 'index', $pb.PbFieldType.O3)
     ..hasRequiredFields = false
   ;
 
@@ -66,15 +61,6 @@ class Request extends $pb.GeneratedMessage {
   $core.bool hasType() => $_has(0);
   @$pb.TagNumber(1)
   void clearType() => clearField(1);
-
-  @$pb.TagNumber(2)
-  $core.int get index => $_getIZ(1);
-  @$pb.TagNumber(2)
-  set index($core.int v) { $_setSignedInt32(1, v); }
-  @$pb.TagNumber(2)
-  $core.bool hasIndex() => $_has(1);
-  @$pb.TagNumber(2)
-  void clearIndex() => clearField(2);
 }
 
 class Response extends $pb.GeneratedMessage {
@@ -125,6 +111,70 @@ class Response extends $pb.GeneratedMessage {
   $core.bool hasValue() => $_has(0);
   @$pb.TagNumber(1)
   void clearValue() => clearField(1);
+}
+
+class RecentRequest extends $pb.GeneratedMessage {
+  factory RecentRequest({
+    $core.int? type,
+    $core.int? flag,
+  }) {
+    final $result = create();
+    if (type != null) {
+      $result.type = type;
+    }
+    if (flag != null) {
+      $result.flag = flag;
+    }
+    return $result;
+  }
+  RecentRequest._() : super();
+  factory RecentRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory RecentRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'RecentRequest', package: const $pb.PackageName(_omitMessageNames ? '' : 'ecl'), createEmptyInstance: create)
+    ..a<$core.int>(1, _omitFieldNames ? '' : 'type', $pb.PbFieldType.O3)
+    ..a<$core.int>(2, _omitFieldNames ? '' : 'flag', $pb.PbFieldType.O3)
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  RecentRequest clone() => RecentRequest()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  RecentRequest copyWith(void Function(RecentRequest) updates) => super.copyWith((message) => updates(message as RecentRequest)) as RecentRequest;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static RecentRequest create() => RecentRequest._();
+  RecentRequest createEmptyInstance() => create();
+  static $pb.PbList<RecentRequest> createRepeated() => $pb.PbList<RecentRequest>();
+  @$core.pragma('dart2js:noInline')
+  static RecentRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<RecentRequest>(create);
+  static RecentRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.int get type => $_getIZ(0);
+  @$pb.TagNumber(1)
+  set type($core.int v) { $_setSignedInt32(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasType() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearType() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.int get flag => $_getIZ(1);
+  @$pb.TagNumber(2)
+  set flag($core.int v) { $_setSignedInt32(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasFlag() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearFlag() => clearField(2);
 }
 
 class DateRequest extends $pb.GeneratedMessage {

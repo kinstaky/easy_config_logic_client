@@ -18,13 +18,12 @@ const Request$json = {
   '1': 'Request',
   '2': [
     {'1': 'type', '3': 1, '4': 1, '5': 5, '10': 'type'},
-    {'1': 'index', '3': 2, '4': 1, '5': 5, '10': 'index'},
   ],
 };
 
 /// Descriptor for `Request`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List requestDescriptor = $convert.base64Decode(
-    'CgdSZXF1ZXN0EhIKBHR5cGUYASABKAVSBHR5cGUSFAoFaW5kZXgYAiABKAVSBWluZGV4');
+    'CgdSZXF1ZXN0EhIKBHR5cGUYASABKAVSBHR5cGU=');
 
 @$core.Deprecated('Use responseDescriptor instead')
 const Response$json = {
@@ -37,6 +36,20 @@ const Response$json = {
 /// Descriptor for `Response`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List responseDescriptor = $convert.base64Decode(
     'CghSZXNwb25zZRIUCgV2YWx1ZRgBIAEoBVIFdmFsdWU=');
+
+@$core.Deprecated('Use recentRequestDescriptor instead')
+const RecentRequest$json = {
+  '1': 'RecentRequest',
+  '2': [
+    {'1': 'type', '3': 1, '4': 1, '5': 5, '10': 'type'},
+    {'1': 'flag', '3': 2, '4': 1, '5': 5, '10': 'flag'},
+  ],
+};
+
+/// Descriptor for `RecentRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List recentRequestDescriptor = $convert.base64Decode(
+    'Cg1SZWNlbnRSZXF1ZXN0EhIKBHR5cGUYASABKAVSBHR5cGUSEgoEZmxhZxgCIAEoBVIEZmxhZw'
+    '==');
 
 @$core.Deprecated('Use dateRequestDescriptor instead')
 const DateRequest$json = {

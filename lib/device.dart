@@ -112,11 +112,19 @@ class DeviceModel {
 
   Future<void> refreshScaler() async {
     try {
-      final Request request = Request(type: 0, index: 0);
-      scaler = [];
+      final Request request = Request(type: 0);
+      var index = 0;
       await for (var response in stub.getScaler(request)) {
-        scaler.add(response.value);
+        if (index < scalerNum) scaler[index] = response.value;
+        ++index;
+        // if (index > scalerNum) {
+        //   print("Index: $index, scaler: ${response.value}");
+        // }
       }
+// if (index > scalerNum) {
+//   print("Warning $index");
+//   print(scaler);
+// }
       if (ScalerMode.values[scalerMode] == ScalerMode.modeLive) {
         ++avgNumber;
         if (avgNumber >= scalerLiveModeAvg[scalerLiveMode]) {
@@ -149,19 +157,37 @@ class DeviceModel {
   }
 
   Future<void> getLiveScaler() async {
+    var flag = 0;
     for (var i = 0; i < visual.length; ++i) {
       if (!visual[i]) continue;
-      final Request request = Request(type: scalerLiveMode+1, index: i);
-      try {
-        var rangeIndex = 0;
-        await for (var response in stub.getScaler(request)) {
-          visualScaler[i][rangeIndex] = response.value;
+      flag |= 1 << i;
+    }
+    final RecentRequest request = RecentRequest(
+      type: scalerLiveMode,
+      flag: flag
+    );
+    var rangeIndex = 0;
+    var index = 0;
+    while (index < scalerNum && !visual[index]) {
+      ++index;
+    }
+    try {
+      await for (var response in stub.getScalerRecent(request)) {
+        if (rangeIndex >= 120) {
+          ++index;
+          while (index < scalerNum && !visual[index]) {
+            ++index;
+          }
+          rangeIndex = 0;
+        }
+        if (index < scalerNum && rangeIndex < 120) {
+          visualScaler[index][rangeIndex] = response.value;
           ++rangeIndex;
         }
-        avgNumber = 0;
-      } catch (e) {
-        print("Caught error: $e");
       }
+      avgNumber = 0;
+    } catch (e) {
+      print("Caught error: $e");
     }
   }
 

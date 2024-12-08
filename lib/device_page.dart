@@ -60,7 +60,7 @@ class DevicePage extends StatelessWidget {
                 ),
               ),
               ConfigTab(device: device),
-              ScalerNamesTab(deviceMap: deviceMap, device: device),
+              ScalerNamesTab(device: device),
             ],
           ),
         ),
@@ -74,11 +74,9 @@ class DevicePage extends StatelessWidget {
 class ScalerNamesTab extends StatefulWidget {
   const ScalerNamesTab({
     super.key,
-    required this.deviceMap,
     required this.device,
   });
 
-  final DeviceMapModel deviceMap;
   final DeviceModel device;
 
   @override
@@ -162,7 +160,7 @@ class _ScalerNamesTabState extends State<ScalerNamesTab> {
                       for (var i = 0; i < widget.device.scalerNames!.length; ++i) {
                         widget.device.scalerNames![i] = textControllers[i].text;
                       }
-                      deviceMap.saveDevice();
+                      widget.device.saveScalerNames();
                     },
                     style: buttonStyle,
                     child: const Text("save"),

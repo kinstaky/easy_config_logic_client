@@ -164,6 +164,27 @@ class DeviceModel {
     );
   }
 
+  Future<void> saveScalerNames() async {
+    await Hive.initFlutter();
+    var box = await Hive.openBox("device");
+    box.put("device_${name}_${address}_${port}_scaler_names", scalerNames);
+    await box.close();
+  }
+
+  Future<void> loadScalerNames() async {
+    await Hive.initFlutter();
+    var box = await Hive.openBox("device");
+    scalerNames = box.get("device_${name}_${address}_${port}_scaler_names");
+    if (scalerNames == null) {
+      scalerNames = [];
+      for (var i = 0; i < scalerNum; ++i) {
+        scalerNames!.add("$i");
+      }
+    }
+    await box.close();
+  }
+
+
   Future<void> refreshState() async {
     if (errorConnect >= maxConnectTry) return;
     try {
@@ -355,12 +376,12 @@ class DeviceAdapter extends TypeAdapter<DeviceModel> {
     var name = reader.read();
     var address = reader.read();
     var port = reader.read();
-    var scalerNames = reader.read();
+    // var scalerNames = reader.read();
     return DeviceModel(
       name: name,
       address: address,
       port: port,
-      scalerNames: scalerNames,
+      // scalerNames: scalerNames,
     );
   }
 
@@ -369,7 +390,7 @@ class DeviceAdapter extends TypeAdapter<DeviceModel> {
     writer.write(obj.name);
     writer.write(obj.address);
     writer.write(obj.port);
-    writer.write(obj.scalerNames);
+    // writer.write(obj.scalerNames);
   }
 }
 
@@ -392,6 +413,10 @@ class DeviceMapModel extends ChangeNotifier {
     for (var dev in devices.values) {
       await dev.getConfig();
     }
+    await box.close();
+    for (var dev in devices.values) {
+      await dev.loadScalerNames();
+    }
     Timer.periodic(
       const Duration(seconds: 1),
       (_) => refresh(),
@@ -407,6 +432,7 @@ class DeviceMapModel extends ChangeNotifier {
       box.put("device$count", device);
       count++;
     }
+    await box.close();
   }
 
   final Map<String, DeviceModel> devices = {};

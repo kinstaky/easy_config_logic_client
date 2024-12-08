@@ -41,10 +41,10 @@ class EasyConfigLogicClient extends $grpc.Client {
       '/ecl.EasyConfigLogic/GetConfig',
       ($0.Request value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $0.Expression.fromBuffer(value));
-  static final _$setConfig = $grpc.ClientMethod<$0.Expression, $0.Response>(
+  static final _$setConfig = $grpc.ClientMethod<$0.Expression, $0.ParseResponse>(
       '/ecl.EasyConfigLogic/SetConfig',
       ($0.Expression value) => value.writeToBuffer(),
-      ($core.List<$core.int> value) => $0.Response.fromBuffer(value));
+      ($core.List<$core.int> value) => $0.ParseResponse.fromBuffer(value));
 
   EasyConfigLogicClient($grpc.ClientChannel channel,
       {$grpc.CallOptions? options,
@@ -72,7 +72,7 @@ class EasyConfigLogicClient extends $grpc.Client {
     return $createStreamingCall(_$getConfig, $async.Stream.fromIterable([request]), options: options);
   }
 
-  $grpc.ResponseFuture<$0.Response> setConfig($async.Stream<$0.Expression> request, {$grpc.CallOptions? options}) {
+  $grpc.ResponseFuture<$0.ParseResponse> setConfig($async.Stream<$0.Expression> request, {$grpc.CallOptions? options}) {
     return $createStreamingCall(_$setConfig, request, options: options).single;
   }
 }
@@ -117,13 +117,13 @@ abstract class EasyConfigLogicServiceBase extends $grpc.Service {
         true,
         ($core.List<$core.int> value) => $0.Request.fromBuffer(value),
         ($0.Expression value) => value.writeToBuffer()));
-    $addMethod($grpc.ServiceMethod<$0.Expression, $0.Response>(
+    $addMethod($grpc.ServiceMethod<$0.Expression, $0.ParseResponse>(
         'SetConfig',
         setConfig,
         true,
         false,
         ($core.List<$core.int> value) => $0.Expression.fromBuffer(value),
-        ($0.Response value) => value.writeToBuffer()));
+        ($0.ParseResponse value) => value.writeToBuffer()));
   }
 
   $async.Future<$0.Response> getState_Pre($grpc.ServiceCall call, $async.Future<$0.Request> request) async {
@@ -151,5 +151,5 @@ abstract class EasyConfigLogicServiceBase extends $grpc.Service {
   $async.Stream<$0.Response> getScalerRecent($grpc.ServiceCall call, $0.RecentRequest request);
   $async.Stream<$0.Response> getScalerDate($grpc.ServiceCall call, $0.DateRequest request);
   $async.Stream<$0.Expression> getConfig($grpc.ServiceCall call, $0.Request request);
-  $async.Future<$0.Response> setConfig($grpc.ServiceCall call, $async.Stream<$0.Expression> request);
+  $async.Future<$0.ParseResponse> setConfig($grpc.ServiceCall call, $async.Stream<$0.Expression> request);
 }

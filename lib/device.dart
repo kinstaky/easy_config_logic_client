@@ -22,11 +22,70 @@ const scalerLiveModeAvg = [
   1, 10, 60, 720,
 ];
 
+class ParseResult {
+  ParseResult({
+    required this.index,
+    required this.status,
+    required this.position,
+    required this.length,
+  });
+
+  String message() {
+    switch (status) {
+      case 1:
+        return "Invalid character.\n";
+      case 2:
+        return "Variable starts with digits.\n";
+      case 3:
+        return "Vriable starts with underscore '_'.\n";
+      case 101:
+        return "Invalid token.\n";
+      case 102:
+        return "Token can't be shifted.\n";
+      case 103:
+        return "Invalid token type.\n";
+      case 104:
+        return "Invalid action type.\n";
+      case 201:
+        return "Tokens less than 3.\n";
+      case 202:
+        return "Invalid token type.\n";
+      case 203:
+        return "Multiple source of port.\n";
+      case 204:
+        return "Input and output in the same port.\n";
+      case 205:
+        return "Invalid scaler input.\n";
+      case 206:
+        return "LEMO and LVDS in the same port.\n";
+      case 207:
+        return "Undefined variable.\n";
+      case 208:
+        return "Nested downscale expression.\n";
+      case 209:
+        return "Invalid external clock source.\n";
+      case 300:
+        return "Generate error.\n";
+      case 400:
+        return "Connect server failed.\n";
+      default:
+        return "Undefined error.\n";
+    }
+  }
+
+  int index = -1;
+  int status = 0;
+  int position = 0;
+  int length = 0;
+}
+
+
 class DeviceModel {
   DeviceModel({
     required this.name,
     required this.address,
     required this.port,
+    this.scalerNames
   }) {
     errorConnect = 0;
     scalerMode = 0;
@@ -37,6 +96,12 @@ class DeviceModel {
       visualScaler.add([]);
       for (var j = 0; j < 120; ++j) {
         visualScaler[i].add(0);
+      }
+    }
+    if (scalerNames == null) {
+      scalerNames = [];
+      for (var i = 0; i < scalerNum; ++i) {
+        scalerNames!.add("$i");
       }
     }
     initStub();
@@ -51,6 +116,7 @@ class DeviceModel {
     scalerMode = other.scalerMode;
     scalerLiveMode = other.scalerLiveMode;
     scaler = List.from(other.scaler);
+    scalerNames = List.from(other.scalerNames!);
     visual = List.from(other.visual);
     visualScaler = List.from(other.visualScaler);
     avgNumber = other.avgNumber;
@@ -73,6 +139,8 @@ class DeviceModel {
   int scalerLiveMode = 0;
   // current scaler value
   List<int> scaler = [];
+  // scaler names
+  List<String>? scalerNames = [];
   // visual scaler
   List<bool> visual = [];
   // visual scaler data
@@ -231,14 +299,16 @@ class DeviceModel {
       await for (var expr in stub.getConfig(request)) {
         newExpressions.add(expr.value);
       }
+      configTime = DateTime.parse(newExpressions.first);
+      expressions = newExpressions.sublist(1);
     } catch (e) {
       print("Caught error: $e");
     }
-    configTime = DateTime.parse(newExpressions.first);
-    expressions = newExpressions.sublist(1);
   }
 
-  Future<int> setConfig() async {
+
+
+  Future<ParseResult> setConfig() async {
     Stream<Expression> convertExpression() async* {
       for (var expr in expressions) {
         yield Expression(value: expr);
@@ -246,10 +316,31 @@ class DeviceModel {
     }
     try {
       final result = await stub.setConfig(convertExpression());
-      return result.value;
+      if (
+        result.value == 104
+        && expressions[result.index].length == result.position
+      ) {
+        return ParseResult(
+          index: result.index,
+          status: result.value,
+          position: result.position,
+          length: 0,
+        );
+      }
+      return ParseResult(
+        index: result.index,
+        status: result.value,
+        position: result.position,
+        length: result.length,
+      );
     } catch (e) {
       print("Caught error: $e");
-      return -1;
+      return ParseResult(
+        index: -1,
+        status: 400,
+        position: 0,
+        length: 0,
+      );
     }
   }
 }
@@ -264,10 +355,12 @@ class DeviceAdapter extends TypeAdapter<DeviceModel> {
     var name = reader.read();
     var address = reader.read();
     var port = reader.read();
+    var scalerNames = reader.read();
     return DeviceModel(
       name: name,
       address: address,
-      port: port
+      port: port,
+      scalerNames: scalerNames,
     );
   }
 
@@ -276,6 +369,7 @@ class DeviceAdapter extends TypeAdapter<DeviceModel> {
     writer.write(obj.name);
     writer.write(obj.address);
     writer.write(obj.port);
+    writer.write(obj.scalerNames);
   }
 }
 
@@ -288,6 +382,7 @@ class DeviceMapModel extends ChangeNotifier {
     await Hive.initFlutter();
     Hive.registerAdapter(DeviceAdapter());
     var box = await Hive.openBox("device");
+    // box.deleteFromDisk();
     var deviceCount = box.get("deviceCount") ?? 0;
     // box.put("deviceCount", 0);
     for (var i = 0; i < deviceCount; ++i) {

@@ -79,3 +79,19 @@ const Expression$json = {
 final $typed_data.Uint8List expressionDescriptor = $convert.base64Decode(
     'CgpFeHByZXNzaW9uEhQKBXZhbHVlGAEgASgJUgV2YWx1ZQ==');
 
+@$core.Deprecated('Use parseResponseDescriptor instead')
+const ParseResponse$json = {
+  '1': 'ParseResponse',
+  '2': [
+    {'1': 'value', '3': 1, '4': 1, '5': 5, '10': 'value'},
+    {'1': 'index', '3': 2, '4': 1, '5': 5, '10': 'index'},
+    {'1': 'position', '3': 3, '4': 1, '5': 5, '10': 'position'},
+    {'1': 'length', '3': 4, '4': 1, '5': 5, '10': 'length'},
+  ],
+};
+
+/// Descriptor for `ParseResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List parseResponseDescriptor = $convert.base64Decode(
+    'Cg1QYXJzZVJlc3BvbnNlEhQKBXZhbHVlGAEgASgFUgV2YWx1ZRIUCgVpbmRleBgCIAEoBVIFaW'
+    '5kZXgSGgoIcG9zaXRpb24YAyABKAVSCHBvc2l0aW9uEhYKBmxlbmd0aBgEIAEoBVIGbGVuZ3Ro');
+

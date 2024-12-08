@@ -319,6 +319,98 @@ class Expression extends $pb.GeneratedMessage {
   void clearValue() => clearField(1);
 }
 
+class ParseResponse extends $pb.GeneratedMessage {
+  factory ParseResponse({
+    $core.int? value,
+    $core.int? index,
+    $core.int? position,
+    $core.int? length,
+  }) {
+    final $result = create();
+    if (value != null) {
+      $result.value = value;
+    }
+    if (index != null) {
+      $result.index = index;
+    }
+    if (position != null) {
+      $result.position = position;
+    }
+    if (length != null) {
+      $result.length = length;
+    }
+    return $result;
+  }
+  ParseResponse._() : super();
+  factory ParseResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory ParseResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'ParseResponse', package: const $pb.PackageName(_omitMessageNames ? '' : 'ecl'), createEmptyInstance: create)
+    ..a<$core.int>(1, _omitFieldNames ? '' : 'value', $pb.PbFieldType.O3)
+    ..a<$core.int>(2, _omitFieldNames ? '' : 'index', $pb.PbFieldType.O3)
+    ..a<$core.int>(3, _omitFieldNames ? '' : 'position', $pb.PbFieldType.O3)
+    ..a<$core.int>(4, _omitFieldNames ? '' : 'length', $pb.PbFieldType.O3)
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  ParseResponse clone() => ParseResponse()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  ParseResponse copyWith(void Function(ParseResponse) updates) => super.copyWith((message) => updates(message as ParseResponse)) as ParseResponse;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static ParseResponse create() => ParseResponse._();
+  ParseResponse createEmptyInstance() => create();
+  static $pb.PbList<ParseResponse> createRepeated() => $pb.PbList<ParseResponse>();
+  @$core.pragma('dart2js:noInline')
+  static ParseResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ParseResponse>(create);
+  static ParseResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.int get value => $_getIZ(0);
+  @$pb.TagNumber(1)
+  set value($core.int v) { $_setSignedInt32(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasValue() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearValue() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.int get index => $_getIZ(1);
+  @$pb.TagNumber(2)
+  set index($core.int v) { $_setSignedInt32(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasIndex() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearIndex() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.int get position => $_getIZ(2);
+  @$pb.TagNumber(3)
+  set position($core.int v) { $_setSignedInt32(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasPosition() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearPosition() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.int get length => $_getIZ(3);
+  @$pb.TagNumber(4)
+  set length($core.int v) { $_setSignedInt32(3, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasLength() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearLength() => clearField(4);
+}
+
 
 const _omitFieldNames = $core.bool.fromEnvironment('protobuf.omit_field_names');
 const _omitMessageNames = $core.bool.fromEnvironment('protobuf.omit_message_names');

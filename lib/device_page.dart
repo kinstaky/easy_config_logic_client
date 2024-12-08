@@ -24,7 +24,7 @@ class DevicePage extends StatelessWidget {
 
     if (device != null) {
       return DefaultTabController(
-        length: 2,
+        length: 3,
         child: Scaffold(
           appBar: AppBar(
             leading: IconButton(
@@ -46,6 +46,7 @@ class DevicePage extends StatelessWidget {
               tabs:  [
                 Tab(text: "scaler"),
                 Tab(text: "config"),
+                Tab(text: "scaler names")
               ],
             ),
           ),
@@ -59,13 +60,154 @@ class DevicePage extends StatelessWidget {
                 ),
               ),
               ConfigTab(device: device),
+              ScalerNamesTab(deviceMap: deviceMap, device: device),
             ],
-          )
+          ),
         ),
       );
     } else {
       return const Scaffold();
     }
+  }
+}
+
+class ScalerNamesTab extends StatefulWidget {
+  const ScalerNamesTab({
+    super.key,
+    required this.deviceMap,
+    required this.device,
+  });
+
+  final DeviceMapModel deviceMap;
+  final DeviceModel device;
+
+  @override
+  State<ScalerNamesTab> createState() => _ScalerNamesTabState();
+}
+
+class _ScalerNamesTabState extends State<ScalerNamesTab> {
+  final buttonStyle = OutlinedButton.styleFrom(
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(
+        Radius.circular(5),
+      ),
+    ),
+  );
+
+  late final List<TextEditingController> textControllers;
+
+
+  @override
+  void initState() {
+    super.initState();
+    textControllers = List.generate(
+      widget.device.scalerNames!.length,
+      (index) => TextEditingController(
+        text: widget.device.scalerNames![index],
+      ),
+    );
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          vertical: 10,
+          horizontal: 5,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 5,
+                    horizontal: 20,
+                  ),
+                  child: OutlinedButton(
+                    onPressed: () {
+                      for (var i = 0; i < widget.device.scalerNames!.length; i++) {
+                        textControllers[i].text = widget.device.scalerNames![i];
+                      }
+                    },
+                    style: buttonStyle,
+                    child: const Text("load"),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 5,
+                    horizontal: 0,
+                  ),
+                  child: OutlinedButton(
+                    onPressed: (){
+                      for (var i = 0; i < widget.device.scalerNames!.length; i++) {
+                        textControllers[i].text = "$i";
+                      }
+                    },
+                    style: buttonStyle,
+                    child: const Text("reset"),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 5,
+                    horizontal: 20,
+                  ),
+                  child: FilledButton(
+                    onPressed: () {
+                      for (var i = 0; i < widget.device.scalerNames!.length; ++i) {
+                        widget.device.scalerNames![i] = textControllers[i].text;
+                      }
+                      deviceMap.saveDevice();
+                    },
+                    style: buttonStyle,
+                    child: const Text("save"),
+                  ),
+                ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                20, 20, 0, 5
+              ),
+              child: Wrap(
+                spacing: 10,
+                runSpacing: 10,
+                children: widget.device.scalerNames!.mapIndexed(
+                  (index, value) => SizedBox(
+                    width: 132,
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: Text(
+                            index < 10 ? "  $index" : "$index",
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 90,
+                          child: TextField(
+                            controller: textControllers[index],
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ).toList(),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -87,6 +229,14 @@ class _ConfigTabState extends State<ConfigTab> {
 
   late final TextEditingController textController;
 
+  bool validParseResult(ParseResult result) {
+    if (result.status == 201 || result.status == 208 || result.status == 300) {
+      return false;
+    }
+    if (result.index < 0) return false;
+    return true;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -104,6 +254,8 @@ class _ConfigTabState extends State<ConfigTab> {
         ),
       ),
     );
+    final textStyle = Theme.of(context).textTheme.bodyLarge!;
+
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -150,9 +302,63 @@ class _ConfigTabState extends State<ConfigTab> {
                   ),
                   child: FilledButton(
                     onPressed: () async {
-                      widget.device.expressions = textController.text.split("\n");
+                      var expressions = textController.text.split("\n");
+                      widget.device.expressions = expressions;
                       var result = await widget.device.setConfig();
-                      print("Set result $result");
+                      if (result.status != 0) {
+                        final snackBar = SnackBar(
+                          content: RichText(
+                              text: TextSpan(
+                                text: result.message(),
+                                style: textStyle.copyWith(
+                                  color: Colors.black,
+                                ),
+                                // style: const TextStyle(
+                                //   color: Colors.black
+                                // ),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: validParseResult(result)
+                                      ? expressions[result.index].substring(
+                                        0,
+                                        result.position
+                                      )
+                                      : "",
+                                  ),
+                                  TextSpan(
+                                    text: validParseResult(result)
+                                      ? expressions[result.index].substring(
+                                        result.position,
+                                        result.position + result.length
+                                      )
+                                      : "",
+                                    style: textStyle.copyWith(
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: validParseResult(result)
+                                      ? expressions[result.index].substring(
+                                        result.position + result.length,
+                                        expressions[result.index].length
+                                      )
+                                      : "",
+                                  ),
+                                ],
+                            ),
+                          ),
+                          duration: const Duration(seconds: 1000),
+                          backgroundColor: Colors.white70,
+                          action: SnackBarAction(
+                            label: 'Close',
+                            onPressed: () {},
+                          ),
+                        );
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).clearSnackBars();
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        }
+                      }
                     },
                     style: buttonStyle,
                     child: const Text("save"),
@@ -564,39 +770,45 @@ class ScalerLiveText extends StatelessWidget {
   final List lineColors;
   final DeviceModel device;
 
+  List<SizedBox> buildText(context, name, value) {
+    List<SizedBox> result = [];
+    for (var index = 0; index < name.length; ++index) {
+      result.add(
+        SizedBox(
+          width: 120,
+          child: TextButton(
+            onPressed: () {
+              device.visual[index] = !device.visual[index];
+              device.getLiveScaler();
+            },
+            iconAlignment: IconAlignment.start,
+            style: TextButton.styleFrom(
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(0)),
+              ),
+              alignment: Alignment.centerLeft,
+            ),
+            child: Text(
+              "${name[index]}: ${value[index]}",
+              style: device.visual[index]
+                ? Theme.of(context).textTheme.bodyLarge!.copyWith(
+                  color: lineColors[index]
+                )
+                : Theme.of(context).textTheme.bodyLarge,
+            ),
+          )
+        )
+      );
+    }
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Wrap(
       spacing: 20,
       runSpacing: 10,
-      children: device.scaler.mapIndexed(
-        (index, value) {
-          return SizedBox(
-            width: 120,
-            child: TextButton(
-              onPressed: () {
-                device.visual[index] = !device.visual[index];
-                device.getLiveScaler();
-              },
-              iconAlignment: IconAlignment.start,
-              style: TextButton.styleFrom(
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(0)),
-                ),
-                alignment: Alignment.centerLeft,
-              ),
-              child: Text(
-                "$index: $value",
-                style: device.visual[index]
-                  ? Theme.of(context).textTheme.bodyLarge!.copyWith(
-                    color: lineColors[index]
-                  )
-                  : Theme.of(context).textTheme.bodyLarge,
-              ),
-            )
-          );
-        }
-      ).toList(),
+      children: buildText(context, device.scalerNames, device.scaler),
     );
   }
 }

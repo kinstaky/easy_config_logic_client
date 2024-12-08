@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:grpc/grpc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'package:easy_config_logic_client/generated/ecl.pbgrpc.dart';
 
@@ -169,6 +171,25 @@ class DeviceModel {
     var box = await Hive.openBox("device");
     box.put("device_${name}_${address}_${port}_scaler_names", scalerNames);
     await box.close();
+
+    final current = DateTime.now();
+    String timeStr =
+      "${current.year}-${current.month}-${current.day}_"
+      "${current.hour}:${current.minute}:${current.second}";
+    final directory = await getApplicationDocumentsDirectory();
+    final path = directory.path;
+    final file = File(
+      "$path/.easy-config-logic/scaler_names/"
+      "device_${name}_$address:${port}_$timeStr.txt"
+    );
+    await file.create(recursive: true);
+    String content = "";
+    if (scalerNames != null) {
+      for (var i = 0; i < scalerNames!.length; ++i) {
+        content += "$i: ${scalerNames![i]}\n";
+      }
+    }
+    await file.writeAsString(content);
   }
 
   Future<void> loadScalerNames() async {

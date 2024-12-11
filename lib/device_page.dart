@@ -732,8 +732,8 @@ class ScalerChart extends StatelessWidget {
                         text = "${time.hour}:${time.minute.toString().padLeft(2, '0')}";
                       }
                     } else {
-                      final minute = value.toInt() * 12;
-                      final hour = value.toInt() / 5;
+                      final minute = (value.toInt() * 12) % 60;
+                      final hour = (value / 5).toInt();
                       text = "$hour:$minute";
                     }
                     return SideTitleWidget(

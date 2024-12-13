@@ -29,8 +29,8 @@ class Client extends StatelessWidget {
         title: "easy config logic client",
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.blue,
-            brightness: Brightness.dark,
+            seedColor: Colors.deepOrangeAccent,
+            brightness: Brightness.light,
           ),
         ),
         restorationScopeId: "app",

@@ -1,6 +1,9 @@
 name: easy_config_logic_client
 description: Client for easy-config-logic.
 publish_to: none
+version: 1.0.0
+homepage: https://github.com/kinstaky/easy_config_logic_client
+documentation: https://kinstaky.github.io/easy-config-logic
 
 environment:
   sdk: ^3.1.1

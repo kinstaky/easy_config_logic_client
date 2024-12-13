@@ -1,0 +1,16 @@
+display_name: Easy Config Logic Client
+package_name: easy-config-logic-client
+
+maintainer:
+  name: kinstaky
+  eamil: kinstaky@163.com
+
+priority: optional
+section: x11
+installed_size: 24576
+
+essential: false
+generic_name: EasyConfig Application
+startup_notify: false
+# icon:
+# metainfo:

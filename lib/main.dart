@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+// import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_config_logic_client/device.dart';
 import 'package:easy_config_logic_client/home_page.dart';
@@ -27,6 +28,15 @@ class Client extends StatelessWidget {
       create: (context) => deviceMap,
       child: MaterialApp(
         title: "easy config logic client",
+        // localizationsDelegates: const [
+        //   GlobalMaterialLocalizations.delegate,
+        //   GlobalWidgetsLocalizations.delegate,
+        //   // GlobalCupertinoLocalizations.delegate
+        // ],
+        // supportedLocales: const [
+        //   Locale('en'), // English
+        //   Locale('zh'), // Chinese
+        // ],
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(
             seedColor: Colors.deepOrangeAccent,

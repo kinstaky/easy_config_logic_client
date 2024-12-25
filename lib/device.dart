@@ -161,6 +161,7 @@ class DeviceModel {
         port: int.parse(port),
         options: const ChannelOptions(
           credentials: ChannelCredentials.insecure(),
+          connectTimeout: Duration(seconds: 3),
         ),
       ),
     );
@@ -335,6 +336,15 @@ class DeviceModel {
   }
 
   Future<void> getConfig() async {
+    try {
+      final Request request = Request(type: 0);
+      final response = await stub.getState(request);
+      if (response.value != 3) return;
+    } catch (e) {
+      print("Caught error: $e");
+      return;
+    }
+
     final Request request = Request(type: 0);
     List<String> newExpressions = [];
     try {

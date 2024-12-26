@@ -3,6 +3,7 @@ import 'package:easy_config_logic_client/main.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:easy_config_logic_client/device.dart';
 
 
@@ -42,11 +43,11 @@ class DevicePage extends StatelessWidget {
                 Text("${device.address}:${device.port}"),
               ],
             ),
-            bottom: const TabBar(
+            bottom: TabBar(
               tabs:  [
-                Tab(text: "scaler"),
-                Tab(text: "config"),
-                Tab(text: "scaler names")
+                Tab(text: AppLocalizations.of(context)!.scaler),
+                Tab(text: AppLocalizations.of(context)!.config),
+                Tab(text: AppLocalizations.of(context)!.scalerNames)
               ],
             ),
           ),
@@ -132,7 +133,7 @@ class _ScalerNamesTabState extends State<ScalerNamesTab> {
                       }
                     },
                     style: buttonStyle,
-                    child: const Text("load"),
+                    child: Text(AppLocalizations.of(context)!.load),
                   ),
                 ),
                 Padding(
@@ -147,7 +148,7 @@ class _ScalerNamesTabState extends State<ScalerNamesTab> {
                       }
                     },
                     style: buttonStyle,
-                    child: const Text("reset"),
+                    child: Text(AppLocalizations.of(context)!.reset),
                   ),
                 ),
                 Padding(
@@ -163,7 +164,7 @@ class _ScalerNamesTabState extends State<ScalerNamesTab> {
                       widget.device.saveScalerNames();
                     },
                     style: buttonStyle,
-                    child: const Text("save"),
+                    child: Text(AppLocalizations.of(context)!.save),
                   ),
                 ),
               ],
@@ -277,7 +278,7 @@ class _ConfigTabState extends State<ConfigTab> {
                         widget.device.expressions.join("\n");
                     },
                     style: buttonStyle,
-                    child: const Text("load"),
+					child: Text(AppLocalizations.of(context)!.load),
                   ),
                 ),
                 Padding(
@@ -290,7 +291,7 @@ class _ConfigTabState extends State<ConfigTab> {
                       textController.text = "";
                     },
                     style: buttonStyle,
-                    child: const Text("clear"),
+                    child: Text(AppLocalizations.of(context)!.clear),
                   ),
                 ),
                 Padding(
@@ -359,7 +360,7 @@ class _ConfigTabState extends State<ConfigTab> {
                       }
                     },
                     style: buttonStyle,
-                    child: const Text("save"),
+                    child: Text(AppLocalizations.of(context)!.save),
                   ),
                 ),
               ],
@@ -367,7 +368,8 @@ class _ConfigTabState extends State<ConfigTab> {
             Padding(
               padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 5.0),
               child: Text(
-                "Last config: ${widget.device.configTime.toString().substring(0, 19)}",
+                "${AppLocalizations.of(context)!.lastConfigHint}"
+				"${widget.device.configTime.toString().substring(0, 19)}",
                 style: Theme.of(context).textTheme.titleLarge,
               ),
             ),
@@ -441,14 +443,14 @@ class _ScalerTabState extends State<ScalerTab> with RestorationMixin {
                 child: SizedBox(
                   width: 250,
                   child: SegmentedButton<ScalerMode>(
-                    segments: const <ButtonSegment<ScalerMode>>[
+                    segments: <ButtonSegment<ScalerMode>>[
                       ButtonSegment<ScalerMode>(
                         value: ScalerMode.modeLive,
-                        label: Text("Real time"),
+                        label: Text(AppLocalizations.of(context)!.realTimeSelection),
                       ),
                       ButtonSegment<ScalerMode>(
                         value: ScalerMode.modeHistory,
-                        label: Text("History"),
+                        label: Text(AppLocalizations.of(context)!.historySelection),
                       ),
                     ],
                     selected: <ScalerMode>{scalerMode},
@@ -517,10 +519,12 @@ class _LiveModeSelectorState extends State<LiveModeSelector> {
 
   @override
   Widget build(BuildContext context) {
-    // var deviceMap = context.watch<DeviceMapModel>();
-    // var device = deviceMap.devices[deviceMap.selectedDevice]!;
-    // var selectedMode = device.scalerLiveMode;
-
+	var localScalerLiveModeName = [
+		AppLocalizations.of(context)!.liveModeName2m,
+        AppLocalizations.of(context)!.liveModeName20m,
+        AppLocalizations.of(context)!.liveModeName2h,
+        AppLocalizations.of(context)!.liveModeName24h,
+	];
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
       child: MenuAnchor(
@@ -538,7 +542,7 @@ class _LiveModeSelectorState extends State<LiveModeSelector> {
                 borderRadius: BorderRadius.all(Radius.circular(10)),
               ),
             ),
-            child: Text(scalerLiveModeName[selectedMode]),
+            child: Text(localScalerLiveModeName[selectedMode]),
           );
         },
         menuChildren: List<MenuItemButton>.generate(
@@ -553,7 +557,7 @@ class _LiveModeSelectorState extends State<LiveModeSelector> {
               }
               setState(() => selectedMode = index);
             },
-            child: Text(scalerLiveModeName[index]),
+            child: Text(localScalerLiveModeName[index]),
           )
         )
       ),

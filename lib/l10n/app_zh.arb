@@ -1,9 +1,33 @@
 {
 	"@@locale": "zh",
+
 	"addDeviceTooltip": "添加设备",
 	"refreshTooltip": "刷新",
 	"editDeviceTooltip": "编辑",
 	"deleteDeviceTooltip": "删除",
+
+	"newDeviceTitle": "新设备",
+	"editDeviceTitle": "修改设备",
+	"name": "名称",
+	"ip": "IP",
+	"port": "端口",
+	"deviceInputHintPrefix": "输入设备",
+	"save": "保存",
+
+	"scaler": "计数器",
+	"config": "配置",
+	"scalerNames": "计数器别名",
+	"realTimeSelection": "实时",
+	"historySelection": "历史",
+	"clear": "清空",
+	"load": "加载",
+	"reset": "重置",
+	"lastConfigHint": "上一次配置：",
+	"liveModeName2m": "2 分钟",
+	"liveModeName20m": "20 分钟",
+	"liveModeName2h": "2 小时",
+	"liveModeName24h": "24 小时",
+
 	"themeColorSettings": "主题颜色：",
 	"brightnessSettings": "深色模式：",
 	"languageSettings": "语言："

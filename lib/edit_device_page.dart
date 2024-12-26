@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:easy_config_logic_client/device.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class EditDevicePage extends StatefulWidget {
   const EditDevicePage({
@@ -23,7 +25,7 @@ class _EditDevicePageState extends State<EditDevicePage> {
     textController["name"] = TextEditingController(
       text: widget.device?.name,
     );
-    textController["address"] = TextEditingController(
+    textController["ip"] = TextEditingController(
       text: widget.device?.address,
     );
     textController["port"] = TextEditingController(
@@ -39,15 +41,25 @@ class _EditDevicePageState extends State<EditDevicePage> {
     super.dispose();
   }
 
-  static const textFieldName = ["name", "address", "port"];
+  static const textFieldName = ["name", "ip", "port"];
   final Map<String, TextEditingController> textController = {};
 
 
   @override
   Widget build(BuildContext context) {
+    final localNames = {
+      "name": AppLocalizations.of(context)!.name,
+      "ip": AppLocalizations.of(context)!.ip,
+      "port": AppLocalizations.of(context)!.port,
+    };
+    final hintPrefix = AppLocalizations.of(context)!.deviceInputHintPrefix;
     return Scaffold(
       appBar: AppBar(
-        title: Text("${widget.device == null ? "New" : "Edit"} device"),
+        title: Text(
+          widget.device == null
+            ? AppLocalizations.of(context)!.newDeviceTitle
+            : AppLocalizations.of(context)!.editDeviceTitle,
+        ),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,7 +77,7 @@ class _EditDevicePageState extends State<EditDevicePage> {
                       horizontal: 20,
                     ),
                     width: 100,
-                    child: Text(name),
+                    child: Text(localNames[name]!),
                   ),
                   SizedBox(
                     width: 200,
@@ -73,7 +85,7 @@ class _EditDevicePageState extends State<EditDevicePage> {
                       controller: textController[name],
                       decoration: InputDecoration(
                         border: const OutlineInputBorder(),
-                        hintText: "Enter device $name",
+                        hintText: "$hintPrefix${localNames[name]}",
                       ),
                     )
                   ),
@@ -93,7 +105,7 @@ class _EditDevicePageState extends State<EditDevicePage> {
                   port: textController["port"]!.text,
                 ));
               },
-              child: const Text("Save"),
+              child: Text(AppLocalizations.of(context)!.save),
             ),
           )
         ],

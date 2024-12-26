@@ -1,5 +1,6 @@
 {
 	"@@locale": "en",
+
 	"addDeviceTooltip": "Add new device",
 	"@addDeviceTooltip": {
 		"description": "Tooltip for adding new device."
@@ -16,6 +17,89 @@
 	"@deleteDeviceTooltip": {
 		"description": "Tooltip for deleting existing device."
 	},
+
+	"newDeviceTitle": "New device",
+	"@newDeviceTitle": {
+		"description": "Title for adding new device page."
+	},
+	"editDeviceTitle": "Edit device",
+	"@editDeviceTitle": {
+		"description": "Title for editing existing device page."
+	},
+	"name": "name",
+	"@name": {
+		"description": "String for calling something."
+	},
+	"ip": "IP",
+	"@ip": {
+		"description": "IP in network."
+	},
+	"port": "port",
+	"@port": {
+		"description": "Port in network, related to IP."
+	},
+	"deviceInputHintPrefix": "Enter device ",
+	"@deviceInputHintPrefix": {
+		"description": "Prefix of hints in inputting device properties."
+	},
+	"save": "save",
+	"@save": {
+		"description": "Action to apply and store changes."
+	},
+
+	"scaler": "scaler",
+	"@scaler": {
+		"description": "Title of tab for showing counts."
+	},
+	"config": "config",
+	"@config": {
+		"description": "Title of tab for config device."
+	},
+	"scalerNames": "scaler names",
+	"@scalerNames": {
+		"description": "Title of tab for editing scaler names."
+	},
+	"realTimeSelection": "Real time",
+	"@realTimeSelection": {
+		"description": "Selection name for selecting real time mode."
+	},
+	"historySelection": "History",
+	"@historySelection": {
+		"description": "Selection name for selecting history mode."
+	},
+	"clear": "clear",
+	"@clear": {
+		"description": "Action to clear all data."
+	},
+	"load": "load",
+	"@load": {
+		"description": "Action to get stored data."
+	},
+	"reset": "reset",
+	"@reset": {
+		"description": "Action to change settings back to default."
+	},
+	"lastConfigHint": "Last config: ",
+	"@lastConfigHint": {
+		"description": "Hint for showing last config time."
+	},
+	"liveModeName2m": "2 minutes",
+	"@liveModeName2m": {
+		"description": "Period of 2 minutes."
+	},
+	"liveModeName20m": "20 minutes",
+	"@liveModeName20m": {
+		"description": "Period of 20 minutes."
+	},
+	"liveModeName2h": "2 hours",
+	"@liveModeName2h": {
+		"description": "Period of 2 hours."
+	},
+	"liveModeName24h": "24 hours",
+	"@liveModeName24h": {
+		"description": "Period of 24 hours."
+	},
+
 	"themeColorSettings": "Theme: ",
 	"@themeColorSettings": {
 		"description": "Hint for selecting theme color."

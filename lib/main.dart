@@ -1,13 +1,17 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-// import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_config_logic_client/device.dart';
+import 'package:easy_config_logic_client/settings.dart';
 import 'package:easy_config_logic_client/home_page.dart';
 import 'package:easy_config_logic_client/device_page.dart';
+import 'package:easy_config_logic_client/settings_page.dart';
 
 final lineColors = [];
 final deviceMap = DeviceMapModel();
+final settingsModel = SettingsModel();
 
 void main() async {
   var fullColors = Colors.accents.toList();
@@ -15,6 +19,7 @@ void main() async {
     lineColors.add(fullColors[Random().nextInt(fullColors.length)]);
   }
   await deviceMap.init();
+  await settingsModel.init();
   runApp(const Client());
 }
 
@@ -24,28 +29,37 @@ class Client extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => deviceMap,
-      child: MaterialApp(
-        title: "easy config logic client",
-        // localizationsDelegates: const [
-        //   GlobalMaterialLocalizations.delegate,
-        //   GlobalWidgetsLocalizations.delegate,
-        //   // GlobalCupertinoLocalizations.delegate
-        // ],
-        // supportedLocales: const [
-        //   Locale('en'), // English
-        //   Locale('zh'), // Chinese
-        // ],
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.deepOrangeAccent,
-            brightness: Brightness.light,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => deviceMap),
+        ChangeNotifierProvider(create: (context) => settingsModel),
+      ],
+      builder: (context, child) {
+        return MaterialApp(
+          title: "easy config logic client",
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate
+          ],
+          supportedLocales: const [
+            Locale("en"), // English
+            Locale("zh"), // Chinese
+          ],
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: context.watch<SettingsModel>().color,
+              brightness: context.watch<SettingsModel>().brightness,
+            ),
+            fontFamily: context.watch<SettingsModel>().locale
+              == Locale("zh") ? "NotoSansSC" : "Roboto",
           ),
-        ),
-        restorationScopeId: "app",
-        home: const ClientPage(),
-      ),
+          restorationScopeId: "app",
+          locale: context.watch<SettingsModel>().locale,
+          home: const ClientPage(),
+        );
+      }
     );
   }
 }
@@ -84,6 +98,9 @@ class _ClientPageState extends State<ClientPage> {
           lineColors: lineColors,
         );
         break;
+      case 2:
+        page = SettingsPage();
+        break;
       default:
         throw UnimplementedError('no widget for $selectedPageIndex');
     }
@@ -116,7 +133,18 @@ class _ClientPageState extends State<ClientPage> {
                     size: 48,
                   ),
                   label: Text('Device'),
-                )
+                ),
+                NavigationRailDestination(
+                  icon: Icon(
+                    Icons.settings_outlined,
+                    size: 48,
+                  ),
+                  selectedIcon: Icon(
+                    Icons.settings,
+                    size: 48,
+                  ),
+                  label: Text("Preferences"),
+                ),
               ],
               selectedIndex: selectedPageIndex,
               onDestinationSelected: changePage,

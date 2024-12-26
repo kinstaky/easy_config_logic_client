@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_config_logic_client/device.dart';
 import 'package:easy_config_logic_client/edit_device_page.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 Future<void> navigateEditDevicePage(
@@ -61,7 +62,7 @@ class HomePage extends StatelessWidget {
           padding: const EdgeInsets.all(20.0),
           child: FloatingActionButton(
             onPressed: () => navigateEditDevicePage(context),
-            tooltip: "Add new device",
+            tooltip: AppLocalizations.of(context)!.addDeviceTooltip,
             child: const Icon(Icons.add),
           ),
         ),
@@ -111,7 +112,7 @@ class DeviceEntry extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.refresh),
             iconSize: 36,
-            tooltip: "Refresh",
+            tooltip: AppLocalizations.of(context)!.refreshTooltip,
             onPressed: () {
               device.errorConnect = 0;
               device.refreshState();
@@ -120,7 +121,7 @@ class DeviceEntry extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.edit),
             iconSize: 36,
-            tooltip: "Edit",
+            tooltip: AppLocalizations.of(context)!.editDeviceTooltip,
             onPressed: () => navigateEditDevicePage(
               context,
               device: device,
@@ -129,7 +130,7 @@ class DeviceEntry extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.delete_forever),
             iconSize: 36,
-            tooltip: "Delete",
+            tooltip: AppLocalizations.of(context)!.deleteDeviceTooltip,
             onPressed: () {
               var deviceMap = context.read<DeviceMapModel>();
               deviceMap.deleteDevice(device.name);

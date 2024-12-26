@@ -161,7 +161,7 @@ class DeviceModel {
         port: int.parse(port),
         options: const ChannelOptions(
           credentials: ChannelCredentials.insecure(),
-          connectTimeout: Duration(seconds: 3),
+          connectTimeout: Duration(seconds: 1),
         ),
       ),
     );
@@ -421,7 +421,6 @@ class DeviceAdapter extends TypeAdapter<DeviceModel> {
     writer.write(obj.name);
     writer.write(obj.address);
     writer.write(obj.port);
-    // writer.write(obj.scalerNames);
   }
 }
 

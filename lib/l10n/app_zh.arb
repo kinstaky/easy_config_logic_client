@@ -1,0 +1,10 @@
+{
+	"@@locale": "zh",
+	"addDeviceTooltip": "添加设备",
+	"refreshTooltip": "刷新",
+	"editDeviceTooltip": "编辑",
+	"deleteDeviceTooltip": "删除",
+	"themeColorSettings": "主题颜色：",
+	"brightnessSettings": "深色模式：",
+	"languageSettings": "语言："
+}

@@ -1,0 +1,31 @@
+{
+	"@@locale": "en",
+	"addDeviceTooltip": "Add new device",
+	"@addDeviceTooltip": {
+		"description": "Tooltip for adding new device."
+	},
+	"refreshTooltip": "Refresh",
+	"@refreshTooltip": {
+		"description": "Tooltip for refreshing device state."
+	},
+	"editDeviceTooltip": "Edit",
+	"@editDeviceTooltip": {
+		"description": "Tooltip for editing device settings."
+	},
+	"deleteDeviceTooltip": "Delete",
+	"@deleteDeviceTooltip": {
+		"description": "Tooltip for deleting existing device."
+	},
+	"themeColorSettings": "Theme: ",
+	"@themeColorSettings": {
+		"description": "Hint for selecting theme color."
+	},
+	"brightnessSettings": "Dark mode: ",
+	"@brightnessSettings": {
+		"description": "Hint for setting brightness."
+	},
+	"languageSettings": "Languages: ",
+	"@languageSettings": {
+		"description": "Hint for selecting language."
+	}
+}

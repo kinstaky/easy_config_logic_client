@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_config_logic_client/device.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'l10n/app_localizations.dart';
 
 
 class EditDevicePage extends StatefulWidget {
@@ -101,7 +101,7 @@ class _EditDevicePageState extends State<EditDevicePage> {
               onPressed: () {
                 Navigator.pop(context, DeviceModel(
                   name: textController["name"]!.text,
-                  address: textController["address"]!.text,
+                  address: textController["ip"]!.text,
                   port: textController["port"]!.text,
                 ));
               },

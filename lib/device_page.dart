@@ -1,11 +1,10 @@
 import 'package:collection/collection.dart';
 import 'package:easy_config_logic_client/main.dart';
+import 'package:easy_config_logic_client/device.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:easy_config_logic_client/device.dart';
-
 
 class DevicePage extends StatelessWidget {
 
@@ -741,7 +740,7 @@ class ScalerChart extends StatelessWidget {
                       text = "$hour:$minute";
                     }
                     return SideTitleWidget(
-                      axisSide: meta.axisSide,
+                      meta: meta,
                       child: Text(text),
                     );
                   },
@@ -783,23 +782,27 @@ class ScalerLiveText extends StatelessWidget {
               device.visual[index] = !device.visual[index];
               device.getLiveScaler();
             },
-            iconAlignment: IconAlignment.start,
             style: TextButton.styleFrom(
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(0)),
               ),
               alignment: Alignment.centerLeft,
             ),
-            child: Text(
-              "${name[index]}: ${value[index]}",
-              style: device.visual[index]
-                ? Theme.of(context).textTheme.bodyLarge!.copyWith(
-                  color: lineColors[index]
-                )
-                : Theme.of(context).textTheme.bodyLarge,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                "${name[index]}: ${value[index]}",
+                style: device.visual[index]
+                  ? Theme.of(context).textTheme.bodyLarge!.copyWith(
+                    color: lineColors[index]
+                  )
+                  : Theme.of(context).textTheme.bodyLarge,
+                ),
+              ],
             ),
-          )
-        )
+          ),
+        ),
       );
     }
     return result;
